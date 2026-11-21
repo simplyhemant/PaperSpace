@@ -8,9 +8,8 @@ Target Video Duration: 3 minutes 30 seconds to 4 minutes 30 seconds
 Recommended Tools: Loom, OBS Studio, or QuickTime Screen Recording
 
 --------------------------------------------------------------------------------
-VIDEO URL PLACEHOLDER:
-Insert your unlisted video URL below once recorded:
-[https://www.loom.com/share/YOUR_RECORDING_ID_HERE]
+RECORDED LOOM VIDEO URL:
+https://www.loom.com/share/102678fd8fe64f58bd2d600d1779cc46
 --------------------------------------------------------------------------------
 
 ================================================================================

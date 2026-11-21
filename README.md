@@ -2,9 +2,9 @@
 
 > **Ajaia AI-Native Full Stack Developer Assessment**  
 > **Candidate:** Hemant Singh  
-> **Live Deployment:** [https://paperspace-collaboration.vercel.app](https://paperspace-collaboration.vercel.app) *(or your deployed Vercel URL)*  
-> **Repository:** [https://github.com/hemant-singh-dev/paperspace](https://github.com/hemant-singh-dev/paperspace)  
-> **Walkthrough Video:** [WALKTHROUGH.txt](file:///home/hemant/Desktop/PaperSpace/WALKTHROUGH.txt)
+> **Live Deployment:** [https://paper-space-delta.vercel.app](https://paper-space-delta.vercel.app)  
+> **Repository:** [https://github.com/simplyhemant/PaperSpace](https://github.com/simplyhemant/PaperSpace)  
+> **Walkthrough Video:** [https://www.loom.com/share/102678fd8fe64f58bd2d600d1779cc46](https://www.loom.com/share/102678fd8fe64f58bd2d600d1779cc46)
 
 ---
 
@@ -205,6 +205,5 @@ npm run test:watch
 - [x] [AI_WORKFLOW.md](file:///home/hemant/Desktop/PaperSpace/AI_WORKFLOW.md)
 - [x] [AI_LOG.md](file:///home/hemant/Desktop/PaperSpace/AI_LOG.md)
 - [x] [SUBMISSION.md](file:///home/hemant/Desktop/PaperSpace/SUBMISSION.md)
-- [x] [WALKTHROUGH.txt](file:///home/hemant/Desktop/PaperSpace/WALKTHROUGH.txt)
-- [x] 30 Passing Automated Tests (`npm test`)
-# PaperSpace
+- [x] [WALKTHROUGH.txt](file:///home/hemant/Desktop/PaperSpace/WALKTHROUGH.txt) & [Loom Video](https://www.loom.com/share/102678fd8fe64f58bd2d600d1779cc46)
+- [x] 36 Passing Automated Tests (`npm test`)

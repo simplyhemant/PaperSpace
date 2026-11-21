@@ -13,14 +13,14 @@
 
 | Deliverable | Location / URL | Status |
 |---|---|---|
-| **Live Web Application** | [https://paperspace-collaboration.vercel.app](https://paperspace-collaboration.vercel.app) *(or deployed Vercel URL)* | 🟢 Production Ready |
-| **Source Code Repository** | [https://github.com/hemant-singh-dev/paperspace](https://github.com/hemant-singh-dev/paperspace) | 🟢 Complete & Verified |
-| **Walkthrough Video URL** | [WALKTHROUGH.txt](file:///home/hemant/Desktop/PaperSpace/WALKTHROUGH.txt) | 🟢 Script & Outline Ready |
+| **Live Web Application** | [https://paper-space-delta.vercel.app](https://paper-space-delta.vercel.app) | 🟢 **Live & Verified** |
+| **Source Code Repository** | [https://github.com/simplyhemant/PaperSpace](https://github.com/simplyhemant/PaperSpace) | 🟢 **Complete on `main`** |
+| **Walkthrough Video URL** | [https://www.loom.com/share/102678fd8fe64f58bd2d600d1779cc46](https://www.loom.com/share/102678fd8fe64f58bd2d600d1779cc46) | 🟢 **Recorded on Loom** |
 | **System Architecture Doc** | [ARCHITECTURE.md](file:///home/hemant/Desktop/PaperSpace/ARCHITECTURE.md) | 🟢 Comprehensive Spec |
 | **Project Setup & Overview**| [README.md](file:///home/hemant/Desktop/PaperSpace/README.md) | 🟢 Full Documentation |
 | **AI Workflow & Reflection** | [AI_WORKFLOW.md](file:///home/hemant/Desktop/PaperSpace/AI_WORKFLOW.md) | 🟢 Detailed Analysis |
 | **AI Pair-Programming Log** | [AI_LOG.md](file:///home/hemant/Desktop/PaperSpace/AI_LOG.md) | 🟢 Full Step-by-Step Log |
-| **Automated Test Suite** | `tests/*.test.ts` (Vitest) | 🟢 **30/30 Tests Passing** |
+| **Automated Test Suite** | `tests/*.test.ts` (Vitest) | 🟢 **36/36 Tests Passing** |
 
 ---
 
@@ -65,15 +65,17 @@ PaperSpace incorporates a zero-friction **Demo Persona Switcher** directly in th
 
 ---
 
-## 5. Walkthrough Video Plan (3–5 Minutes)
+## 5. Walkthrough Video (3–5 Minutes)
 
 The recorded video walkthrough demonstrates the complete user journey:
+- **Loom Recording URL:** [https://www.loom.com/share/102678fd8fe64f58bd2d600d1779cc46](https://www.loom.com/share/102678fd8fe64f58bd2d600d1779cc46)
+
 1. **0:00 – 0:45**: Architecture, Tech Stack, and Stitch MCP design overview.
 2. **0:45 – 1:30**: Alice (Owner) creating a document, rich-text formatting, and debounced autosave.
 3. **1:30 – 2:15**: Drag-and-drop file upload importing a Markdown file into a structured TipTap document.
 4. **2:15 – 3:00**: Sharing workflow: Alice inviting Bob (Editor) and Charlie (Viewer).
 5. **3:00 – 3:45**: RBAC verification: Switching to Bob (editor content edit vs locked title rename 403); switching to Charlie (read-only canvas, hidden toolbar, 403 reject).
-6. **3:45 – 4:15**: Automated test suite execution (`npm test` -> 30 passing tests).
+6. **3:45 – 4:15**: Automated test suite execution (`npm test` -> 36 passing tests).
 
 *Full recording cues and script are located in [WALKTHROUGH.txt](file:///home/hemant/Desktop/PaperSpace/WALKTHROUGH.txt).*
 
