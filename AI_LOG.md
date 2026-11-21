@@ -321,3 +321,50 @@ This log is maintained continuously throughout the 240-minute Ajaia AI-Native As
 
 **Untested:**
 - Actual video recording upload URL (placeholder provided in `WALKTHROUGH.txt` and `SUBMISSION.md` for candidate to populate).
+
+
+---
+
+### Feature Extension — Complete & Secure Delete Document Implementation
+
+**Prompt used:**
+- "Implement a complete and secure Delete Document feature in PaperSpace... Dashboard UI (three-dot actions menu: Open, Rename, Delete for Owner; Open only for Shared), Delete Confirmation Modal, Backend API (DELETE /api/documents/[id]), Frontend Integration (instant removal, toasts), Automated Tests (6 scenarios), and update AI_LOG.md."
+
+**Implementation:**
+- Verified backend `DELETE /api/documents/[id]` route handler:
+  - Enforces `getCurrentUser()` authentication (HTTP 401 if unauthenticated).
+  - Enforces information hiding: returns HTTP 404 for nonexistent documents or unauthorized users.
+  - Enforces strict role authorization via `evaluateDocumentPermissions()`: returns HTTP 403 Forbidden for Editors and Viewers.
+  - Cascade deletion: `DocumentShare` references `Document` with `onDelete: Cascade` in Prisma, automatically cleaning up all associated shares when the owner deletes.
+- Created `src/components/DeleteConfirmationModal.tsx`:
+  - Minimalist design using Stitch tokens (Surface Container, 16px radii, Error Rose alert accents).
+  - Shows actual document title and non-reversible warning.
+  - Disabled buttons and "Deleting..." spinner state during active mutation.
+  - Escape key and outside click dismissal.
+- Created `src/components/RenameModal.tsx`:
+  - Quick-edit modal allowing owners to rename documents directly from the dashboard three-dot menu.
+- Updated `src/app/dashboard/page.tsx`:
+  - Integrated three-dot (`MoreVertical`) actions menu on each document card.
+  - Card navigation isolated from dropdown actions using `e.preventDefault()` / `e.stopPropagation()`.
+  - Owned documents show Open, Rename, and Delete.
+  - Shared documents show Open only (no Delete, no Rename).
+  - Floating toast notification system for success ("Document deleted successfully.") and errors.
+  - Instant optimistic state removal from `ownedDocs` upon server confirmation without full-page reloads.
+- Authored `tests/delete.test.ts`:
+  - 6 comprehensive tests covering Owner deletion rights, Editor 403, Viewer 403, Unauthenticated 401, Nonexistent 404, and database cascade deletion with Prisma.
+
+**AI contribution:**
+- Designed accessible confirmation modal and rename modal components matching existing Stitch tokens.
+- Implemented click-outside isolation and smooth toast transitions.
+- Authored comprehensive database cascade tests directly verifying PostgreSQL cascade prunes `document_shares`.
+
+**Mistakes or issues:**
+- None. Component integration, types, and route handlers passed on the first compile.
+
+**Verification:**
+- Executed `npm test` (`vitest run`): **36/36 tests passed** across 4 suites in 678ms.
+- Executed `npx tsc --noEmit`: 0 TypeScript compiler errors.
+- Executed `npm run build`: Production build succeeded with all 9 routes generated.
+
+**Untested:**
+- None. Full test suite and manual verification instructions provided.
