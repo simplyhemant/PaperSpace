@@ -184,3 +184,58 @@ This log is maintained continuously throughout the 240-minute Ajaia AI-Native As
 
 **Untested:**
 - External email invite system (using seeded internal demo accounts as specified).
+
+---
+
+### Milestone 4 — File Import (.txt and .md) with Validation & TipTap AST Conversion
+
+**Prompt used:**
+- "begin Milestone 4"
+
+**Implementation:**
+- Implemented `src/lib/importer.ts`:
+  - `convertTextToTipTap()`: Securely parses Markdown lines into native TipTap AST JSON nodes:
+    - Headings (`# `, `## `, `### ` -> `heading` with `level: 1, 2, 3`)
+    - Bullet lists (`- `, `* ` -> `bulletList` with `listItem`)
+    - Ordered lists (`1. ` -> `orderedList` with `listItem`)
+    - Blockquotes (`> ` -> `blockquote`)
+    - Inline marks (`**bold**`, `*italic*`, `` `code` ``)
+    - Plain text paragraphs (`.txt` multi-line conversion)
+  - `deriveTitleFromFilename()`: Cleans and title-cases file basenames for the initial document title.
+  - Pure JSON AST output completely protects against raw HTML/XSS injection attacks.
+- Implemented `/api/import` Route Handler:
+  - Enforces max upload file size of 2 MB (`MAX_FILE_SIZE_BYTES`).
+  - Restricts extensions to `.txt`, `.md`, and `.markdown`.
+  - Rejects unsupported extensions (e.g. `.pdf`, `.docx`) with clear user-facing guidance.
+  - Rejects empty files.
+  - Persists new document into PostgreSQL owned by active user.
+- Implemented `src/components/ImportModal.tsx`:
+  - Matched Stitch screen `Import File Modal — PaperSpace` (`14dc5...`).
+  - Dropzone supporting drag-and-drop file upload and system file browser.
+  - Supports 5 interactive states: `idle`, `ready`, `uploading`, `success`, and `error`.
+  - Shows file size in KB, format limit tags, progress spinner, and one-click "Open in Editor".
+- Integrated "Import File" button into `src/app/dashboard/page.tsx` right next to "New Document".
+
+**AI contribution:**
+- Built full Markdown-to-TipTap AST parser from scratch with zero additional heavy dependencies.
+- Designed resilient multipart upload handler with defense-in-depth file validation.
+- Built interactive modal with drag-and-drop following Stitch MCP design patterns.
+
+**Mistakes or issues:**
+- TypeScript error on `tipTapDoc` typing mismatch with Prisma's `InputJsonValue`.
+
+**Fixes:**
+- Cast `tipTapDoc as any` when passing into Prisma's `data.content` field, satisfying TypeScript.
+
+**Verification:**
+- Executed `POST /api/import` with `system-architecture.md`: Returned `HTTP 201 Created` with full TipTap AST (headings, lists, blockquotes, bold marks) and created document in PostgreSQL.
+- Executed `POST /api/import` with `meeting-notes.txt`: Returned `HTTP 201 Created` with multi-line paragraphs.
+- Executed `POST /api/import` with `document.pdf`: Returned `HTTP 400 Bad Request` (`File format ".pdf" is not supported. Supported formats: .txt and .md under 2 MB.`).
+- Executed `POST /api/import` with empty file: Returned `HTTP 400 Bad Request` (`The uploaded file is empty. Please upload a file with content.`).
+- Executed `POST /api/import` with 2.48 MB file: Returned `HTTP 400 Bad Request` (`File size exceeds the 2 MB limit (uploaded file is 2.48 MB). Please choose a smaller file.`).
+- Executed `GET /api/documents/[id]` verifying the imported document persisted in PostgreSQL and was readable.
+- Executed `npx tsc --noEmit`: 0 TypeScript errors.
+- Executed `npm run build`: Production build succeeded with all 9 routes generated.
+
+**Untested:**
+- Complex nested Markdown tables or LaTeX formulas (scoped out as per instructions).
