@@ -37,3 +37,43 @@ This log is maintained continuously throughout the 240-minute Ajaia AI-Native As
 
 **Untested:**
 - Supabase production connection (scheduled for deployment phase).
+
+---
+
+### Milestone 1 — Scaffold + PostgreSQL + Tailwind Tokens + Seed Data
+
+**Prompt used:**
+- "ok" to approve Milestone 1: scaffold Next.js 15, configure Tailwind with Stitch design tokens, configure Prisma 6 with local PostgreSQL, author seed script with 3 demo users, test build and verification.
+
+**Implementation:**
+- Initialized Git repository with proper `.gitignore` excluding `.env`, `.next`, and `node_modules`.
+- Configured `tailwind.config.ts` mapping all Stitch MCP tokens: `primary.container` (`#4f46e5`), `surface` (`#faf8ff`), `surface.container-lowest` (`#ffffff`), `error` (`#ba1a1a`), and `Inter` sans font family.
+- Defined portable Prisma schema in `prisma/schema.prisma` with `User`, `Document`, and `DocumentShare` models, compound unique keys, and cascading delete rules.
+- Wrote `prisma/seed.ts` seeding 3 demo users: Alice Johnson (Owner), Bob Smith (Editor), Charlie Davis (Viewer) alongside 4 sample documents representing various ownership and share permissions.
+- Implemented core libraries: `src/lib/prisma.ts` (singleton), `src/lib/auth.ts` (cookie-based demo session resolver), `src/lib/permissions.ts` (RBAC matrix helper), `src/lib/validations.ts` (Zod schemas), and `src/types/index.ts`.
+- Created `.env.example` and local `.env` pointing to `postgresql://hemant@localhost:5433/paperspace?host=/tmp`.
+- Built homepage (`src/app/page.tsx`) and custom 404 page (`src/app/not-found.tsx`).
+
+**AI contribution:**
+- Applied the design system tokens retrieved from Stitch MCP directly into Tailwind's theme configuration.
+- Crafted robust singleton Prisma instance and type-safe server RBAC permission evaluator.
+- Fixed database connection and seeding scripts to work in a sandbox-friendly environment.
+
+**Mistakes or issues:**
+- Next.js build failed during font optimization due to `next/font/google` attempting to fetch Inter from `fonts.googleapis.com` without network access in the sandboxed build step.
+- `ts-node` failed on initial seed invocation due to JSON escaping inside `package.json` seed command string.
+
+**Fixes:**
+- Replaced `next/font/google` with local CSS font-family stack in `globals.css` and Tailwind config (`font-sans`), eliminating external network dependency at build time.
+- Configured `"ts-node"` options directly inside `tsconfig.json` and simplified the seed script to `ts-node prisma/seed.ts`.
+
+**Verification:**
+- Executed `npx prisma generate`: Generated Prisma Client v6.19.3.
+- Executed `npx prisma db push`: Synchronized schema with PostgreSQL database `paperspace` on port 5433.
+- Executed `npx prisma db seed`: Successfully seeded Alice Johnson, Bob Smith, Charlie Davis, and 4 documents with shares.
+- Executed `psql` queries verifying all 3 users and 4 documents in the database.
+- Executed `npx tsc --noEmit`: 0 TypeScript errors.
+- Executed `npm run build`: Production build succeeded (`Compiled successfully`, static page generation 4/4).
+
+**Untested:**
+- Vercel live deployment (Supabase credentials will be configured before live deploy).
