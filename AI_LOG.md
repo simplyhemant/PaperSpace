@@ -133,3 +133,54 @@ This log is maintained continuously throughout the 240-minute Ajaia AI-Native As
 
 **Untested:**
 - Multi-user concurrent autosave conflict resolution (single-user debounced autosave with RBAC is active as designed).
+
+---
+
+### Milestone 3 — Demo Authentication Switcher + Sharing Dialog + Granular RBAC
+
+**Prompt used:**
+- "begin milestone 3"
+
+**Implementation:**
+- Implemented `/api/auth/me`: Resolves current user session from HttpOnly cookie and lists all 3 seeded demo accounts.
+- Implemented `/api/auth/switch`: Validates requested userId exists in database and sets `demo_user_id` HttpOnly cookie.
+- Implemented `/api/documents/[id]/shares`:
+  - `GET`: Lists all document collaborators.
+  - `POST`: Validates recipient email and role (`EDITOR` or `VIEWER`) via Zod. Strictly enforces that only the document Owner can share (`403 Forbidden` for Editor or Viewer). Prevents sharing with document owner.
+- Implemented `/api/documents/[id]/shares/[shareId]`:
+  - `PATCH`: Modifies collaborator role (`EDITOR` <-> `VIEWER`). Owner only (`403` for non-owners).
+  - `DELETE`: Revokes access immediately. Owner only (`403` for non-owners).
+- Implemented `src/components/Navbar.tsx`:
+  - App header with PaperSpace branding and active tab indication.
+  - Interactive Demo Persona Switcher dropdown showing active user name, avatar, and role.
+  - Seamlessly switches between Alice Johnson (Owner), Bob Smith (Editor), and Charlie Davis (Viewer) with instant cookie update.
+- Implemented `src/components/ShareDialog.tsx`:
+  - Designed matching Stitch screen `Share Document Modal — PaperSpace` (`a6ff5...`).
+  - Email input with quick-select pills for Bob and Charlie.
+  - Collaborator roster with Owner lock, role change dropdown selector, and delete/revoke button.
+  - One-click "Copy Link" with clipboard toast feedback.
+- Integrated `Navbar` and `ShareDialog` into `src/app/dashboard/page.tsx` and `src/app/documents/[id]/page.tsx`.
+
+**AI contribution:**
+- Built components following the Stitch MCP design theme (elevation, typography scale, pill badges, and input borders).
+- Integrated seamless demo user switcher with zero mock data—backed 100% by PostgreSQL users and secure cookies.
+- Guaranteed complete RBAC symmetry: Owner can share/edit/rename/delete; Editor can edit content only; Viewer is strictly read-only.
+
+**Mistakes or issues:**
+- Next.js webpack runtime error (`Cannot find module './chunks/vendor-chunks/next.js'`) occurred when `next build` was executed while `next dev` was running simultaneously in the background.
+
+**Fixes:**
+- Terminated running dev process, cleared `.next/` directory (`rm -rf .next`), and compiled a clean production build (`npm run build`).
+
+**Verification:**
+- Executed `GET /api/auth/me`: Verified Alice Johnson active session and 3 demo accounts.
+- Executed `POST /api/auth/switch` to Bob Smith: Verified `Set-Cookie: demo_user_id=usr_bob_editor_002;`.
+- Executed `GET /api/documents` with Bob's cookie: Returned Bob's owned documents and Alice's document as shared (`role: "EDITOR"`).
+- Executed `POST /api/documents/doc_prd_paperspace_001/shares` with Bob's cookie: Returned `HTTP 403 Forbidden` ("Forbidden: Only document owners can manage sharing permissions").
+- Executed `POST /api/documents/doc_arch_notes_002/shares` as Alice (Owner): Returned `HTTP 201 Created` adding Charlie as EDITOR.
+- Executed `PATCH` on share as Alice: Returned `HTTP 200 OK` changing Charlie's role to VIEWER.
+- Executed `DELETE` on share as Alice: Returned `HTTP 200 OK` revoking Charlie's share.
+- Executed `npx tsc --noEmit`: 0 TypeScript errors.
+
+**Untested:**
+- External email invite system (using seeded internal demo accounts as specified).
