@@ -14,7 +14,9 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { ImportModal } from "@/components/ImportModal";
 import { DocumentListItem } from "@/types";
+import { UploadCloud } from "lucide-react";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -22,6 +24,7 @@ export default function DashboardPage() {
   const [sharedDocs, setSharedDocs] = useState<DocumentListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const fetchDocuments = useCallback(async () => {
     try {
@@ -83,7 +86,16 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setIsImportModalOpen(true)}
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-sm font-medium transition-colors shadow-xs"
+            >
+              <UploadCloud className="w-4 h-4 text-secondary" />
+              <span>Import File</span>
+            </button>
+
             <button
               type="button"
               onClick={handleCreateDocument}
@@ -207,6 +219,13 @@ export default function DashboardPage() {
           </div>
         )}
       </main>
+
+      {/* Import File Modal */}
+      <ImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImportSuccess={() => fetchDocuments()}
+      />
     </div>
   );
 }
