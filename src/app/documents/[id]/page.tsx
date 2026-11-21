@@ -15,6 +15,8 @@ import {
   FileText,
 } from "lucide-react";
 import { Editor, SaveStatus } from "@/components/Editor";
+import { ShareDialog } from "@/components/ShareDialog";
+import { Navbar } from "@/components/Navbar";
 import { DocumentDetail } from "@/types";
 
 interface PageProps {
@@ -42,6 +44,7 @@ export default function DocumentPage({ params }: PageProps) {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("saved");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [isRenaming, setIsRenaming] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Fetch document details
   const fetchDocument = useCallback(async () => {
@@ -247,10 +250,8 @@ export default function DocumentPage({ params }: PageProps) {
           {permissions.canManageShares && (
             <button
               type="button"
-              onClick={() => {
-                alert("Share modal will open in Milestone 3");
-              }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-container text-on-primary hover:bg-primary text-xs font-medium rounded-lg shadow-sm transition-all"
+              onClick={() => setIsShareModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-primary-container text-on-primary hover:bg-primary text-xs font-medium rounded-lg shadow-sm transition-all"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span>Share</span>
@@ -283,6 +284,16 @@ export default function DocumentPage({ params }: PageProps) {
           onSaveStatusChange={handleSaveStatusChange}
         />
       </main>
+
+      {/* Share Dialog */}
+      <ShareDialog
+        documentId={documentData.id}
+        documentTitle={documentData.title}
+        owner={documentData.owner}
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        onSharesUpdated={fetchDocument}
+      />
     </div>
   );
 }

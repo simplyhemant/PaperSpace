@@ -13,6 +13,7 @@ import {
   ArrowRight,
   ExternalLink,
 } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
 import { DocumentListItem } from "@/types";
 
 export default function DashboardPage() {
@@ -68,41 +69,34 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-surface flex flex-col">
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-40 w-full bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/40 px-4 sm:px-8 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-primary-container text-on-primary flex items-center justify-center font-bold">
-            <FileText className="w-4 h-4" />
-          </div>
-          <span className="text-lg font-bold text-on-surface">PaperSpace</span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handleCreateDocument}
-            disabled={creating}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-primary-container hover:bg-primary text-on-primary text-sm font-medium transition-colors shadow-sm disabled:opacity-50"
-          >
-            {creating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Plus className="w-4 h-4" />
-            )}
-            <span>New Document</span>
-          </button>
-        </div>
-      </header>
+      {/* Top Navbar with Persona Switcher */}
+      <Navbar activeTab="documents" />
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-8">
-        {/* Page Header */}
+        {/* Page Header & Action Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-on-surface">Documents</h1>
             <p className="text-sm text-secondary mt-1">
               Create, edit, and organize your collaborative rich-text documents.
             </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleCreateDocument}
+              disabled={creating}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-container hover:bg-primary text-on-primary text-sm font-medium transition-colors shadow-sm disabled:opacity-50"
+            >
+              {creating ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Plus className="w-4 h-4" />
+              )}
+              <span>New Document</span>
+            </button>
           </div>
         </div>
 
