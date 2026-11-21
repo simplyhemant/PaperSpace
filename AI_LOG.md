@@ -76,4 +76,60 @@ This log is maintained continuously throughout the 240-minute Ajaia AI-Native As
 - Executed `npm run build`: Production build succeeded (`Compiled successfully`, static page generation 4/4).
 
 **Untested:**
-- Vercel live deployment (Supabase credentials will be configured before live deploy).
+- Supabase production connection (Supabase credentials will be configured before live deploy).
+
+---
+
+### Milestone 2 — Documents CRUD + TipTap Editor + Debounced Autosave
+
+**Prompt used:**
+- "DB name: paperspace, username=postgres, password=project, connect this then start with Milestone 2"
+
+**Implementation:**
+- Configured role `postgres` with password `project` on PostgreSQL cluster and updated `.env` to `postgresql://postgres:project@localhost:5433/paperspace?host=/tmp`. Verified connection and re-seeded.
+- Implemented `/api/documents` Route Handler:
+  - `GET`: Returns owned documents and shared documents separated for the active demo user.
+  - `POST`: Validates title with Zod, creates initial structured TipTap document JSON tree in PostgreSQL, assigns ownership to active user.
+- Implemented `/api/documents/[id]` Route Handler:
+  - `GET`: Evaluates permissions via `evaluateDocumentPermissions()`. Returns HTTP 404 if user has no access (prevents document enumeration). Returns document, permissions, and collaborator list.
+  - `PATCH`: Validates payload. Enforces `canRename` (Owner only) and `canEditContent` (Owner & Editor). Returns HTTP 403 Forbidden if a Viewer attempts to edit content or if an Editor attempts to rename.
+  - `DELETE`: Enforces `canDelete` (Owner only). Returns HTTP 403 Forbidden for non-owners.
+- Implemented `src/components/Toolbar.tsx`:
+  - Formatting controls: Headings (H1, H2, H3), Bold, Italic, Underline, Bulleted list, Numbered list, Blockquote, Code block, Undo, Redo.
+  - Automatically hidden/disabled when the editor is in read-only mode (`editable: false`).
+- Implemented `src/components/Editor.tsx`:
+  - TipTap React wrapper with `StarterKit` and `Underline` extensions.
+  - `immediatelyRender: false` for clean React 19 / SSR compatibility.
+  - Debounced autosave (1000ms delay) with queuing to prevent overlapping HTTP requests.
+  - Emits real-time save states: `saving`, `saved`, `error`, and `unsaved`.
+- Implemented `src/app/documents/[id]/page.tsx`:
+  - Document sub-header with Back button, editable title input for Owners (locked with lock icon for non-owners), live save status pill (`Saved`, `Saving...`, `Save failed`), and role pill badge.
+  - View-only alert banner for Viewers notifying that edit access is restricted.
+- Implemented `src/app/dashboard/page.tsx`:
+  - Segmented sections: "My Documents" and "Shared With Me".
+  - "New Document" button that persists a new document and navigates directly to the editor.
+
+**AI contribution:**
+- Built UI components matching the design specifications downloaded from Stitch MCP (`Document Editor — PaperSpace` and `Dashboard — Documents`).
+- Implemented race-condition-free debounced autosave queue in `Editor.tsx`.
+- Strictly enforced server-side RBAC (404 for unknown/unauthorized, 403 for insufficient role) on every route handler.
+
+**Mistakes or issues:**
+- TypeScript error on Lucide React `<Lock ... />` icon receiving `title` attribute directly (Lucide SVG props disallow direct HTML `title` prop).
+
+**Fixes:**
+- Wrapped the `<Lock />` icon in a `<span title="Title locked">` tag, satisfying TypeScript and maintaining tooltip behavior.
+
+**Verification:**
+- Executed `npx tsc --noEmit`: 0 TypeScript errors.
+- Executed `npm run build`: Production build succeeded with all 6 routes generated.
+- Executed `curl` tests against live dev server:
+  - `GET /api/documents`: 200 OK returning owned and shared documents.
+  - `POST /api/documents`: 201 Created creating new document.
+  - `PATCH /api/documents/[id]` (rename): 200 OK updating title.
+  - `PATCH /api/documents/[id]` (content): 200 OK saving TipTap JSON structure.
+  - `PATCH /api/documents/[id]` as Viewer: 403 Forbidden ("You have view-only access to this document").
+  - `GET /api/documents/unknown-id`: 404 Not Found ("Document not found").
+
+**Untested:**
+- Multi-user concurrent autosave conflict resolution (single-user debounced autosave with RBAC is active as designed).
