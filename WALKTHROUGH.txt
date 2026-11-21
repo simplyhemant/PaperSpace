@@ -1,0 +1,152 @@
+================================================================================
+PaperSpace — Walkthrough Video Recording Guide & Script (3–5 Minutes)
+================================================================================
+Candidate: Hemant Singh
+Assessment: Ajaia AI-Native Full Stack Developer Assessment
+Project: PaperSpace — Collaborative Document Editor
+Target Video Duration: 3 minutes 30 seconds to 4 minutes 30 seconds
+Recommended Tools: Loom, OBS Studio, or QuickTime Screen Recording
+
+--------------------------------------------------------------------------------
+VIDEO URL PLACEHOLDER:
+Insert your unlisted video URL below once recorded:
+[https://www.loom.com/share/YOUR_RECORDING_ID_HERE]
+--------------------------------------------------------------------------------
+
+================================================================================
+SECTION-BY-SECTION SCRIPT & CUE SHEET
+================================================================================
+
+[0:00 – 0:40] PART 1: INTRODUCTION & ARCHITECTURE
+--------------------------------------------------------------------------------
+Visual:
+- Browser showing the PaperSpace Dashboard with Alice Johnson logged in.
+- Quick switch to VS Code showing project directory structure and ARCHITECTURE.md.
+
+Spoken Script:
+"Hello! My name is Hemant Singh, and this is PaperSpace—a lightweight collaborative
+document editor inspired by Google Docs, built for the Ajaia AI-Native Full Stack
+Assessment.
+
+PaperSpace is built on Next.js 15 App Router, TypeScript, Tailwind CSS, TipTap 2.x,
+Prisma 6, and PostgreSQL. The UI was designed and extracted using Google's Stitch
+MCP server, adopting clean design tokens for typography, surfaces, and states.
+
+All document authorization is strictly enforced on the server using an RBAC
+matrix: returning HTTP 404 for unauthorized documents to prevent UUID enumeration,
+and HTTP 403 for insufficient role permissions."
+
+
+[0:40 – 1:30] PART 2: DOCUMENT CREATION, RICH TEXT & AUTOSAVE
+--------------------------------------------------------------------------------
+Visual:
+- Click the "+ New Document" button on the Dashboard.
+- Navigate into the new document editor.
+- Rename the document title to "Sprint Retrospective & Roadmap".
+- Type in paragraphs and demonstrate toolbar buttons:
+  * Select text -> Click Bold (B), Italic (I), Underline (U).
+  * Format lines into Heading 1 (H1) and Heading 2 (H2).
+  * Add a bulleted list and numbered list.
+  * Point out the autosave indicator badge in the top right.
+
+Spoken Script:
+"Let's start as Alice Johnson, our document Owner.
+I'll create a new document. Notice how we can rename the title inline.
+In the editor canvas, we have a complete TipTap toolbar with Heading levels, Bold,
+Italic, Underline, Bulleted and Numbered lists, Blockquotes, and Code blocks.
+
+Notice the status badge in the top right: as I type, it transitions smoothly to
+'Saving...' with an animated pulse, and then saves automatically after a 1000 millisecond
+debounce window to 'Saved' with an emerald checkmark. All content is stored as
+structured TipTap JSON AST in PostgreSQL—guaranteeing immunity against HTML XSS."
+
+
+[1:30 – 2:15] PART 3: FILE IMPORT (.MD & .TXT)
+--------------------------------------------------------------------------------
+Visual:
+- Return to the Dashboard.
+- Click the "Import File" button to open the Import Modal.
+- Drag or select a sample Markdown file (e.g. `system-architecture.md`).
+- Show the file tag, size indicator, format limits (.txt, .md under 2 MB).
+- Click "Import Document" -> Wait for success state -> Click "Open in Editor".
+- Show that the Markdown headings, lists, blockquotes, and bold marks converted
+  cleanly into editable TipTap nodes.
+
+Spoken Script:
+"Next, let's test file ingestion. PaperSpace supports uploading Markdown and plain
+text files up to 2 Megabytes.
+I'll click 'Import File', which opens our Stitch-designed dropzone modal.
+When I select a Markdown file, our custom tokenizer translates Markdown headings,
+lists, blockquotes, and inline formatting into native TipTap AST JSON trees.
+Clicking 'Open in Editor' takes us straight into the newly created document, fully
+formatted and ready for collaborative editing."
+
+
+[2:15 – 3:00] PART 4: SHARING WORKFLOW & COLLABORATOR MANAGEMENT
+--------------------------------------------------------------------------------
+Visual:
+- Inside a document owned by Alice, click the "Share" button in the header.
+- The Share Dialog opens showing existing collaborators.
+- Click the quick-add pill for Bob Smith (`bob@paperspace.internal`) -> select EDITOR role -> Click "Add".
+- Add Charlie Davis (`charlie@paperspace.internal`) -> select VIEWER role -> Click "Add".
+- Change Bob's role in the dropdown or demonstrate the revoke button.
+- Click "Copy Link" to show the clipboard copy feature.
+
+Spoken Script:
+"Now let's examine sharing and collaboration.
+As the document Owner, Alice can click 'Share' to open the collaborator roster.
+She can invite users by email or quick-select pre-seeded teammates like Bob and Charlie.
+We can assign Bob the 'Editor' role and Charlie the 'Viewer' role.
+The Owner can also change collaborator roles dynamically or revoke access with
+a single click."
+
+
+[3:00 – 3:50] PART 5: ROLE-BASED ACCESS CONTROL (RBAC) IN ACTION
+--------------------------------------------------------------------------------
+Visual:
+- Use the Demo Persona Switcher in the top navbar to switch to **Bob Smith (Editor)**.
+- Open the document shared by Alice.
+- Show: Bob CAN edit the body text, and changes autosave.
+- Show: Bob CANNOT rename the document title (title has a lock icon and tooltip).
+- Use the Demo Persona Switcher to switch to **Charlie Davis (Viewer)**.
+- Open the document shared by Alice.
+- Show: Charlie's view is strictly read-only: the toolbar is completely hidden,
+  and the editor canvas is locked (`editable: false`).
+- Show that an attempt to access a document that isn't shared returns HTTP 404.
+
+Spoken Script:
+"Now, let's verify our server-side security.
+Using our top-bar persona switcher, I'll switch to Bob Smith, our Editor.
+Bob opens the document: he has full permission to edit text in the canvas, and
+autosave persists his edits. But notice the title: it's locked with a lock icon.
+If Bob attempts to rename or delete the document, the server returns HTTP 403 Forbidden.
+
+Now let's switch to Charlie Davis, our Viewer.
+Opening the document, Charlie's toolbar is completely hidden, and the editor is
+locked in read-only mode.
+Even if a malicious user bypasses the UI and dispatches a PATCH request directly,
+our server-side RBAC engine intercepts the call and rejects it with HTTP 403.
+And if Charlie attempts to access Alice's private documents, the API returns HTTP 404,
+safely preventing UUID enumeration."
+
+
+[3:50 – 4:20] PART 6: AUTOMATED TESTS & CONCLUSION
+--------------------------------------------------------------------------------
+Visual:
+- Switch to terminal.
+- Run `npm test`.
+- Highlight output showing 30 passing tests across permissions, importer, and validations.
+
+Spoken Script:
+"To guarantee software quality, PaperSpace includes an automated test suite
+built with Vitest.
+Running `npm test`, you can see all 30 tests pass in under one second—covering
+our RBAC permission matrix, Markdown AST conversion, and Zod API validation schemas.
+
+In conclusion, PaperSpace satisfies all functional requirements: rich-text editing,
+debounced autosave, Markdown/TXT ingestion, server-side RBAC, and clean design tokens.
+Thank you for watching!"
+
+================================================================================
+END OF SCRIPT
+================================================================================
